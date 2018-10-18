@@ -1,5 +1,5 @@
 ---
-solr_workspace: /root
+solr_workspace: /tmp/solr
 
 solr_create_user: true
 solr_user: solr

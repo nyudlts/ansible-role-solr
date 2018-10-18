@@ -12,11 +12,25 @@
     solr_filename: "apache-solr-{{ solr_version }}"
   when: "solr_version.split('.')[0] == '3'"
 
+  # I don't like this, it's both brittle and general
+  # -  It's only looking for a directory
+  #   The install operation should only run if the contents of 
+  #   the install artifact differ from the installed source.
+  #   hence rpms are proper artifacts because they ahve installation
+  #   metadata, but how do we deal with installing from tarbals?
+  #-  Can we install from Maven Central?
 - name: Check if Solr has been installed already.
   stat:
     path: "{{ solr_install_path }}"
   register: solr_install_path_status
 
+- name: Setup install dir (solr_workspace)
+  path: {{ solr_workspace }}
+  state: directory
+  mode: 0755
+
+  # Since solr and jetty are both java projects it would be nicer to 
+  # pull from Maven Central with mvn.
 - name: Download Solr.
   get_url:
     url: "{{ solr_mirror }}/lucene/solr/{{ solr_version }}/{{ solr_filename }}.tgz"
@@ -56,7 +70,7 @@
 - include_tasks: cores.yml
   when: "solr_cores and solr_version.split('.')[0] >= '5'"
 
-- include_tasks: trim-fat.yml
+- include_tasks: cleanup.yml
 
 # Configure solr as systemd service
 - include_tasks: service.yml
