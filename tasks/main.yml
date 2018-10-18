@@ -24,10 +24,11 @@
     path: "{{ solr_install_path }}"
   register: solr_install_path_status
 
-- name: Setup install dir (solr_workspace)
-  path: "{{ solr_workspace }}"
-  state: directory
-  mode: 0755
+- name: Setup install dir - solr_workspace
+  file:
+    path: "{{ solr_workspace }}"
+    state: directory
+    mode: 0755
 
   # Since solr and jetty are both java projects it would be nicer to 
   # pull from Maven Central with mvn.
