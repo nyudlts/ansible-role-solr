@@ -25,7 +25,7 @@
   register: solr_install_path_status
 
 - name: Setup install dir (solr_workspace)
-  path: {{ solr_workspace }}
+  path: "{{ solr_workspace }}"
   state: directory
   mode: 0755
 
