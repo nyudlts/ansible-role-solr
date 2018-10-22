@@ -73,5 +73,8 @@
 
 - include_tasks: cleanup.yml
 
+# Apply custom Jetty config with whitelisting
+- include_tasks: jetty.yml
+
 # Configure solr as systemd service
 - include_tasks: service.yml
