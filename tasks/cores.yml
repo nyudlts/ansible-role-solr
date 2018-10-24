@@ -8,12 +8,12 @@
 
 - name: Ensure Solr conf directories exist.
   file:
-    path: "{{ solr_home }}/data/{{ item }}"
+    path: "{{ solr_home }}/data/{{ item.name }}"
     state: directory
     owner: "{{ solr_user }}"
     group: "{{ solr_user }}"
     recurse: true
-  when: "item not in solr_cores_current.content"
+  when: "item.name not in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
 
 #- name: Ensure core configuration directories exist.
@@ -25,9 +25,9 @@
 
 - name: Create configured cores.
   git:
-    repo: 'https://github.com/nyudlts/viewer_configs.git'
-    dest: /var/solr/data/{{ item }}
-  when: "item not in solr_cores_current.content"
+    repo: "{{ item.conf_repo }}"
+    dest: /var/solr/data/{{ item.name }}
+  when: "item.name not in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
