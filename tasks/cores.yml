@@ -27,7 +27,20 @@
   git:
     repo: "{{ item.conf_repo }}"
     dest: /var/solr/data/{{ item.name }}
+    version: "{{ item.conf_version }}"
   when: "item.name not in solr_cores_current.content"
+  with_items: "{{ solr_cores }}"
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Update existing cores.
+  git:
+    repo: "{{ item.conf_repo }}"
+    dest: /var/solr/data/{{ item.name }}
+    version: "{{ item.conf_version }}"
+    clone: no
+    update: yes
+  when: "item.name in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"

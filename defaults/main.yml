@@ -26,6 +26,7 @@ solr_timezone: "UTC"
 solr_cores:
   - name: viewer
     conf_repo: "https://github.com"
+    conf_version: master
 
 jetty_whitelist:
   - ip: 127.0.0.1
