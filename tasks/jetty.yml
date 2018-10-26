@@ -1,5 +1,11 @@
-- name: Copy Jetty XML
+- name: Copy Jetty XML with IP whitelisting
   template:
     src: "jetty.xml.j2"
     dest: "/opt/solr/server/etc/jetty.xml"
+    mode: 0644
+
+- name: Copy Web XML with CORS domain whitelisting
+  template:
+    src: "webdefault.xml.j2"
+    dest: "/opt/solr/server/etc/webdefault.xml"
     mode: 0644

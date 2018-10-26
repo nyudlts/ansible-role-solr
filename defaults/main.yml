@@ -31,6 +31,9 @@ solr_cores:
 jetty_whitelist:
   - ip: 127.0.0.1
 
+jetty_cors_whitelist:
+  - domain: localhost
+
 solr_config_file: /etc/default/{{ solr_service_name }}.in.sh
 
 # Enable restart solr handler
