@@ -536,8 +536,7 @@
      See https://jira.nyu.edu/jira/browse/NYUP-472 for details.
 <param-value>http://stageweb1.dlib.nyu.edu, http://localhost</param-value>
  -->
-      <param-value>{% for host in jetty_cors_whitelist %}
-{{ host.domain }}, {% endfor %}</param-value>
+      <param-value>{% for host in jetty_cors_whitelist %}{% if not loop.last %}{{ host.domain }},{% else %}{{ host.domain }}{% endif %}{% endfor %}</param-value>
    </init-param>
    <init-param>
       <param-name>allowedMethods</param-name>
