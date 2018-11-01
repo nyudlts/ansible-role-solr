@@ -10,6 +10,25 @@ Java must be available on the server. You can easily install Java using the `gee
 
 This role is currently tested and working with Solr 3.x, 4.x, 5.x, 6.x and 7.x.
 
+## Custom Variables added by NYU DLTS
+
+List of cores. Specify name, repo with configuration files, and tag/branch.
+
+    solr_cores:
+      - name: viewer
+        conf_repo: "https://github.com"
+        conf_version: master
+
+List of IPs to whitelist in Jetty. 
+
+    jetty_whitelist:
+      - ip: 127.0.0.1
+
+List of domains to whitelist for CORS.
+
+    jetty_cors_whitelist:
+      - domain: localhost
+
 ## Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
@@ -107,4 +126,4 @@ MIT / BSD
 
 This role was created in 2014 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
 
-Forked 10/17/18
+Forked 10/17/18 Derrick Xu
