@@ -9,3 +9,9 @@
     src: "webdefault.xml.j2"
     dest: "/opt/solr/server/etc/webdefault.xml"
     mode: 0644
+
+- name: Copy Realm properties file
+  template:
+    src: "realm.properties.j2"
+    dest: "/var/solr/realm.properties"
+    mode: 0644
