@@ -13,5 +13,5 @@
 - name: Copy Realm properties file
   template:
     src: "realm.properties.j2"
-    dest: "/var/solr/realm.properties"
+    dest: "/opt/solr/server/realm.properties"
     mode: 0644

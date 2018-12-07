@@ -1,10 +1,10 @@
 ---
-- name: Check current list of Solr cores.
-  uri:
-    url: http://{{ solr_connect_host }}:{{ solr_port }}/solr/admin/cores
-    return_content: true
-  register: solr_cores_current
-  check_mode: false
+#- name: Check current list of Solr cores.
+#  uri:
+#    url: http://{{ solr_connect_host }}:{{ solr_port }}/solr/admin/cores
+#    return_content: true
+#  register: solr_cores_current
+#  check_mode: false
 
 - name: Ensure Solr conf directories exist.
   file:
@@ -13,7 +13,7 @@
     owner: "{{ solr_user }}"
     group: "{{ solr_user }}"
     recurse: true
-  when: "item.name not in solr_cores_current.content"
+#  when: "item.name not in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
 
 #- name: Ensure core configuration directories exist.
@@ -28,7 +28,7 @@
     repo: "{{ item.conf_repo }}"
     dest: /var/solr/data/{{ item.name }}
     version: "{{ item.conf_version }}"
-  when: "item.name not in solr_cores_current.content"
+#  when: "item.name not in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
@@ -40,7 +40,7 @@
     version: "{{ item.conf_version }}"
     clone: no
     update: yes
-  when: "item.name in solr_cores_current.content"
+#  when: "item.name in solr_cores_current.content"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
