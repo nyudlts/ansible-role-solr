@@ -166,16 +166,17 @@
 <!-- Begin authentication block -->
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>Solr select</web-resource-name>
-      <url-pattern>/select/*</url-pattern> <!-- Allow select query with no authentication -->
+      <web-resource-name>NoAuthRequired</web-resource-name>
+        {% for item in solr_noauth_url_patterns %}
+<url-pattern>{{ item.url_pattern }}</url-pattern>{% endfor %}
     </web-resource-collection>
   </security-constraint>
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>Solr admin</web-resource-name>
-      <url-pattern></url-pattern> <!-- Restrict access to admin dashboard -->
-      <url-pattern>/admin/*</url-pattern> <!-- Restrict access to admin API calls -->
+      <web-resource-name>PasswordAuthRequired</web-resource-name>
+        {% for item in solr_auth_url_patterns %}
+<url-pattern>{{ item.url_pattern }}</url-pattern>{% endfor %}
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
