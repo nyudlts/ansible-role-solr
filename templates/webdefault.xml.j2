@@ -525,8 +525,16 @@
 
   <security-constraint>
     <web-resource-collection>
+      <web-resource-name>Solr select</web-resource-name>
+      <url-pattern>/select/*</url-pattern> <!-- Allow select query with no authentication -->
+    </web-resource-collection>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
       <web-resource-name>Solr admin</web-resource-name>
-      <url-pattern>/</url-pattern>
+      <url-pattern></url-pattern> <!-- Restrict access to admin dashboard -->
+      <url-pattern>/admin/*</url-pattern> <!-- Restrict access to admin API calls -->
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
@@ -535,7 +543,7 @@
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>Test Realm</realm-name>
+    <realm-name>Secure Realm</realm-name>
   </login-config>
 
 <filter>
@@ -547,10 +555,6 @@
    </init-param>
    <init-param>
       <param-name>allowedOrigins</param-name>
-<!-- TODO: remove dlib.nyu.edu
-     See https://jira.nyu.edu/jira/browse/NYUP-472 for details.
-<param-value>http://stageweb1.dlib.nyu.edu, http://localhost</param-value>
- -->
       <param-value>{% for host in jetty_cors_whitelist %}{% if not loop.last %}{{ host.domain }},{% else %}{{ host.domain }}{% endif %}{% endfor %}</param-value>
    </init-param>
    <init-param>
