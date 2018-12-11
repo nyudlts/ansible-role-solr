@@ -514,58 +514,21 @@
     </locale-encoding-mapping>
   </locale-encoding-mapping-list>
 
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>Disable TRACE</web-resource-name>
-      <url-pattern>/</url-pattern>
-      <http-method>TRACE</http-method>
-    </web-resource-collection>
-    <auth-constraint/>
-  </security-constraint>
-
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>Solr select</web-resource-name>
-      <url-pattern>/select/*</url-pattern> <!-- Allow select query with no authentication -->
-    </web-resource-collection>
-  </security-constraint>
-
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>Solr admin</web-resource-name>
-      <url-pattern></url-pattern> <!-- Restrict access to admin dashboard -->
-      <url-pattern>/admin/*</url-pattern> <!-- Restrict access to admin API calls -->
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>Secure Realm</realm-name>
-  </login-config>
-
-<filter>
-   <filter-name>cross-origin</filter-name>
-   <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
-   <init-param>
-      <param-name>chainPreflight</param-name>
-      <param-value>false</param-value>
-   </init-param>
-   <init-param>
-      <param-name>allowedOrigins</param-name>
-      <param-value>{% for host in jetty_cors_whitelist %}{% if not loop.last %}{{ host.domain }},{% else %}{{ host.domain }}{% endif %}{% endfor %}</param-value>
-   </init-param>
-   <init-param>
-      <param-name>allowedMethods</param-name>
-      <param-value>GET,OPTIONS,HEAD</param-value>
-   </init-param>
-</filter>
-
-<filter-mapping>
-    <filter-name>cross-origin</filter-name>
-    <url-pattern>*</url-pattern>
-</filter-mapping>
+  <!-- Get rid of error message -->
+    <security-constraint>
+      <web-resource-collection>
+        <web-resource-name>Disable TRACE</web-resource-name>
+        <url-pattern>/</url-pattern>
+        <http-method>TRACE</http-method>
+      </web-resource-collection>
+      <auth-constraint/>
+    </security-constraint>
+    <security-constraint>
+      <web-resource-collection>
+        <web-resource-name>Enable everything but TRACE</web-resource-name>
+        <url-pattern>/</url-pattern>
+        <http-method-omission>TRACE</http-method-omission>
+      </web-resource-collection>
+    </security-constraint>
 
 </web-app>
