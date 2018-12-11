@@ -167,16 +167,18 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>NoAuthRequired</web-resource-name>
-        {% for item in solr_noauth_url_patterns %}
-<url-pattern>{{ item.url_pattern }}</url-pattern>{% endfor %}
+{% for item in solr_noauth_url_patterns %}
+        <url-pattern>{{ item.url_pattern }}</url-pattern>
+{% endfor %}
     </web-resource-collection>
   </security-constraint>
 
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>PasswordAuthRequired</web-resource-name>
-        {% for item in solr_auth_url_patterns %}
-<url-pattern>{{ item.url_pattern }}</url-pattern>{% endfor %}
+{% for item in solr_auth_url_patterns %}
+        <url-pattern>{{ item.url_pattern }}</url-pattern>
+{% endfor %}
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>

@@ -28,6 +28,12 @@ solr_cores:
     conf_repo: "https://github.com"
     conf_version: master
 
+solr_noauth_url_patterns:
+  - url_pattern: '/select/*'
+
+solr_auth_url_patterns:
+  - url_pattern: '/admin/*'
+
 jetty_whitelist:
   - ip: 127.0.0.1
 
