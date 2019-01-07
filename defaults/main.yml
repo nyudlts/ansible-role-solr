@@ -34,6 +34,8 @@ solr_noauth_url_patterns:
 solr_auth_url_patterns:
   - url_pattern: '/admin/*'
 
+solr_admin_hashed_password: "MD5:21232f297a57a5a743894a0e4a801fc3"
+
 jetty_whitelist:
   - ip: 127.0.0.1
 

@@ -19,7 +19,7 @@ List of cores. Specify name, repo with configuration files, and tag/branch.
         conf_repo: "https://github.com"
         conf_version: master
 
-List of IPs to whitelist in Jetty. 
+List of IPs to whitelist in Jetty.
 
     jetty_whitelist:
       - ip: 127.0.0.1
@@ -28,6 +28,23 @@ List of domains to whitelist for CORS.
 
     jetty_cors_whitelist:
       - domain: localhost
+
+List of URL patterns to allow without authentication
+
+    solr_noauth_url_patterns
+      - url_pattern: '/select/*'
+
+List of URL patterns that require authentication
+
+    solr_auth_url_patterns
+      - url_pattern: ''
+      - url_pattern: '/admin/*'
+
+Hashed password for access to admin console. Use this java utility to hash your desired password. Must include the hashing algorithm before the colon, as in example. 
+
+  java -cp /opt/solr/server/lib/jetty-util-9.3.14.v20161028.jar org.eclipse.jetty.util.security.Password admin {password}
+
+    solr_admin_hashed_password: "MD5:21232f297a57a5a743894a0e4a801fc3"
 
 ## Role Variables
 
