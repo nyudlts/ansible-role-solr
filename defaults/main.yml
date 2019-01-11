@@ -26,9 +26,21 @@ solr_timezone: "UTC"
 solr_cores:
   - name: viewer
     conf_repo: "https://github.com"
+    conf_version: master
+
+solr_noauth_url_patterns:
+  - url_pattern: '/select/*'
+
+solr_auth_url_patterns:
+  - url_pattern: '/admin/*'
+
+solr_admin_hashed_password: "MD5:21232f297a57a5a743894a0e4a801fc3"
 
 jetty_whitelist:
   - ip: 127.0.0.1
+
+jetty_cors_whitelist:
+  - domain: localhost
 
 solr_config_file: /etc/default/{{ solr_service_name }}.in.sh
 

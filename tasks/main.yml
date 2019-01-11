@@ -67,6 +67,11 @@
 - include_tasks: configure.yml
   when: "solr_version.split('.')[0] >= '5'"
 
+# Wait a few seconds for Solr to start
+- name: Wait a few seconds for Solr to start
+  pause:
+    seconds: 10
+
 # Create cores, if any are configured.
 - include_tasks: cores.yml
   when: "solr_cores and solr_version.split('.')[0] >= '5'"

@@ -110,21 +110,21 @@
            <Set name="handlers">
              <Array type="org.eclipse.jetty.server.Handler">
                <Item>
-                  <New id="IPAccessHandler" 
-class="org.eclipse.jetty.server.handler.IPAccessHandler"> 
-               <Set name="white"> 
-                 <Array type="String"> 
+                  <New id="IPAccessHandler"
+class="org.eclipse.jetty.server.handler.IPAccessHandler">
+               <Set name="white">
+                 <Array type="String">
                   {% for host in jetty_whitelist %}
 <Item>{{ host.ip }}</Item>
                   {% endfor %}
-</Array> 
-               </Set> 
-               <Set name="whiteListByPath">false</Set> 
-               <Set name="handler"> 
-                 <New id="Contexts" 
-class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/> 
-               </Set> 
-             </New> 
+</Array>
+               </Set>
+               <Set name="whiteListByPath">false</Set>
+               <Set name="handler">
+                 <New id="Contexts"
+class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
+               </Set>
+             </New>
 
                </Item>
                <Item>
@@ -150,7 +150,7 @@ class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
     <Set name="handler">
       <Ref id="RewriteHandler"/>
     </Set>
-    
+
     <!-- =========================================================== -->
     <!-- Configure Request Log                                       -->
     <!-- =========================================================== -->
@@ -187,6 +187,16 @@ class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
 
     <Call name="addBean">
       <Arg>
+        <New class="org.eclipse.jetty.security.HashLoginService">
+          <Set name="name">Secure Realm</Set>
+          <Set name="config"><SystemProperty name="jetty.home" default="."/>/realm.properties</Set>
+          <Set name="refreshInterval">0</Set>
+        </New>
+      </Arg>
+    </Call>
+
+    <Call name="addBean">
+      <Arg>
         <New id="DeploymentManager" class="org.eclipse.jetty.deploy.DeploymentManager">
           <Set name="contexts">
             <Ref refid="Contexts" />
@@ -204,9 +214,9 @@ class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
               </New>
             </Arg>
           </Call>
-          
+
           <!-- Add a customize step to the deployment lifecycle -->
-          <!-- uncomment and replace DebugBinding with your extended AppLifeCycle.Binding class 
+          <!-- uncomment and replace DebugBinding with your extended AppLifeCycle.Binding class
           <Call name="insertLifeCycleNode">
             <Arg>deployed</Arg>
             <Arg>starting</Arg>
@@ -220,9 +230,9 @@ class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
             </Arg>
           </Call>
           -->
-          
+
         </New>
       </Arg>
     </Call>
-    
+
 </Configure>

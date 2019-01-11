@@ -23,8 +23,8 @@
     daemon_reload: yes
     state: restarted
 
-- name: make sure daemon is reloaded (ansible bug)
-  shell: systemctl daemon-reload
+#- name: make sure daemon is reloaded (ansible bug)
+#  shell: systemctl daemon-reload
 
 - name: Restart Solr
   service: name=solr state=restarted enabled=yes
