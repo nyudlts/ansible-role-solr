@@ -34,7 +34,11 @@
     path: /var/solr
     state: directory
     mode: 0755
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 99adbab... Relax logs directory
 - name: Relax access to logs directory
   file:
     path: /var/solr/logs
