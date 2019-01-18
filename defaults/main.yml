@@ -44,6 +44,14 @@ jetty_cors_whitelist:
 
 solr_config_file: /etc/default/{{ solr_service_name }}.in.sh
 
+solr_log_dir: /var/solr/logs
+
+solr_log_level: INFO
+
+solr_log_size: 100MB
+
+solr_logs_to_keep: 30
+
 # Enable restart solr handler
 solr_restart_handler_enabled: true
 

@@ -21,9 +21,15 @@
       line: 'SOLR_TIMEZONE="{{ solr_timezone }}"'
   notify: restart solr
 
+- name: Apply Solr log configuration
+  template:
+    src: "log4j.properties.j2"
+    dest: "{{ solr_home }}/log4j.properties"
+    mode: 0755
+
 - name: Link logs directory
   file:
-    src: /var/solr/logs
+    src: "{{ solr_log_dir }}"
     dest: /var/log/solr
     owner: solr
     group: solr
@@ -31,12 +37,12 @@
 
 - name: Relax access to solr directory
   file:
-    path: /var/solr
+    path: "{{ solr_home }}"
     state: directory
     mode: 0755
 
 - name: Relax access to logs directory
   file:
-    path: /var/solr/logs
+    path: "{{ solr_log_dir }}"
     state: directory
     mode: 0755
