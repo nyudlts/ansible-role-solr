@@ -14,7 +14,7 @@
 
   # I don't like this, it's both brittle and general
   # -  It's only looking for a directory
-  #   The install operation should only run if the contents of 
+  #   The install operation should only run if the contents of
   #   the install artifact differ from the installed source.
   #   hence rpms are proper artifacts because they ahve installation
   #   metadata, but how do we deal with installing from tarbals?
@@ -30,7 +30,7 @@
     state: directory
     mode: 0755
 
-  # Since solr and jetty are both java projects it would be nicer to 
+  # Since solr and jetty are both java projects it would be nicer to
   # pull from Maven Central with mvn.
 - name: Download Solr.
   get_url:
@@ -56,12 +56,19 @@
 - include_tasks: install.yml
   when: "solr_version.split('.')[0] >= '5'"
 
+# Check if Solr service already exists
+- name: Check if service exists already
+  stat:
+    path: /lib/systemd/system/solr.service
+  register: service_exists
+
+# Configur Solr service if it exists
 - name: Ensure solr is started and enabled on boot if configured.
   service:
     name: "{{ solr_service_name }}"
     state: "{{ solr_service_state }}"
     enabled: true
-  when: solr_service_manage
+  when: solr_service_manage and service_exists.stat.exists == True
 
 # Configure solr.
 - include_tasks: configure.yml
@@ -81,5 +88,7 @@
 # Apply custom Jetty config with whitelisting
 - include_tasks: jetty.yml
 
-# Configure solr as systemd service
-- include_tasks: service.yml
+# Configure solr as systemd service if it doesn't exist
+- name: Create the file, if it doesn't exist already
+  include_tasks: service.yml
+  when: service_exists.stat.exists == False
