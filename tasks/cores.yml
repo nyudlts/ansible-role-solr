@@ -1,46 +1,38 @@
 ---
-#- name: Check current list of Solr cores.
-#  uri:
-#    url: http://{{ solr_connect_host }}:{{ solr_port }}/solr/admin/cores
-#    return_content: true
-#  register: solr_cores_current
-#  check_mode: false
+- name: Register list of cores we're supposed to have
+  stat:
+    path: "{{ solr_home }}/data/{{ item.name }}"
+  register: list_of_cores
+  with_items: "{{ solr_cores }}"
 
-- name: Ensure Solr conf directories exist.
+- name: Create directory for any new cores
   file:
     path: "{{ solr_home }}/data/{{ item.name }}"
     state: directory
     owner: "{{ solr_user }}"
     group: "{{ solr_user }}"
     recurse: true
-#  when: "item.name not in solr_cores_current.content"
+  when: "item.name not in list_of_cores.results"
   with_items: "{{ solr_cores }}"
 
-#- name: Ensure core configuration directories exist.
-#  shell: "cp -r {{ solr_install_path }}/example/files/conf/ {{ solr_home }}/data/{{ item }}/"
-#  when: "item not in solr_cores_current.content"
-#  with_items: "{{ solr_cores }}"
-#  become: true
-#  become_user: "{{ solr_user }}"
-
-- name: Create configured cores.
+- name: Clone conf for new cores
   git:
     repo: "{{ item.conf_repo }}"
     dest: /var/solr/data/{{ item.name }}
     version: "{{ item.conf_version }}"
-#  when: "item.name not in solr_cores_current.content"
+  when: "item.name not in list_of_cores.results"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
 
-- name: Update existing cores.
+- name: Update conf for existing cores
   git:
     repo: "{{ item.conf_repo }}"
     dest: /var/solr/data/{{ item.name }}
     version: "{{ item.conf_version }}"
     clone: no
     update: yes
-#  when: "item.name in solr_cores_current.content"
+  when: "item.name in list_of_cores.results"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
