@@ -1,38 +1,62 @@
 ---
-- name: Register list of cores we're supposed to have
-  stat:
-    path: "{{ solr_home }}/data/{{ item.name }}"
+# Search filesystem for existing core directories
+- name: Getting current list of cores from filesystem
+  find:
+    paths: "{{ solr_home }}/data/"
+    recurse: no
+    file_type: directory
   register: list_of_cores
-  with_items: "{{ solr_cores }}"
 
+# Cores detected on filesystem
+- set_fact:
+    solr_local_cores_paths: "{{ list_of_cores.files | map(attribute='path') | list }}"
+- set_fact:
+    solr_local_cores_names: "{{ solr_local_cores_paths | map('regex_search', '[^/]+$') | list }}"
+
+# Cores to install from playbook
+- set_fact:
+    solr_playbook_cores: "{{ solr_cores | map(attribute='name') | list }}"
+
+# Any cores that are listed in playbook, but do not exist locally, create new conf directory
 - name: Create directory for any new cores
   file:
-    path: "{{ solr_home }}/data/{{ item.name }}"
+    path: "{{ solr_home }}/data/{{ item }}"
     state: directory
     owner: "{{ solr_user }}"
     group: "{{ solr_user }}"
     recurse: true
-  when: "item.name not in list_of_cores.results"
-  with_items: "{{ solr_cores }}"
+  when: "item not in solr_local_cores_names"
+  with_items: "{{ solr_playbook_cores }}"
 
+# Pull core conf for new cores
 - name: Clone conf for new cores
   git:
     repo: "{{ item.conf_repo }}"
-    dest: /var/solr/data/{{ item.name }}
+    dest: "{{ solr_home }}/data/{{ item.name }}"
     version: "{{ item.conf_version }}"
-  when: "item.name not in list_of_cores.results"
+  when: "item.name not in solr_local_cores_names"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
 
+# Any cores listed in playbook that already exist, update conf
 - name: Update conf for existing cores
   git:
     repo: "{{ item.conf_repo }}"
-    dest: /var/solr/data/{{ item.name }}
+    dest: "{{ solr_home }}/data/{{ item.name }}"
     version: "{{ item.conf_version }}"
     clone: no
     update: yes
-  when: "item.name in list_of_cores.results"
+    force: yes
+  when: "item.name in solr_local_cores_names"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
+
+- name: Reload ENM core
+  uri:
+    url: http://127.0.0.1:8983/solr/admin/cores?action=RELOAD&core=enm-test
+    method: POST
+    user: admin
+    password: "{{ solr_admin_password }}"
+    force_basic_auth: yes
