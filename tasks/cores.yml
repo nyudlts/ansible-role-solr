@@ -38,6 +38,14 @@
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
+  register: cores_cloned
+
+# Inform user that they need to restart solr to initialize new cores
+- pause:
+    prompt: "New core {{ item.item.name }} added, remember to restart Solr to initialize this new core."
+    seconds: 30
+  with_items: "{{ cores_cloned.results }}"
+  when: 'item.changed'
 
 # Any cores listed in playbook that already exist, update conf
 - name: Update conf for existing cores
@@ -47,16 +55,21 @@
     version: "{{ item.conf_version }}"
     clone: no
     update: yes
-    force: yes
+#    force: yes
   when: "item.name in solr_local_cores_names"
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
+  ignore_errors: yes
+  register: cores_updated
 
-- name: Reload ENM core
+# Reload any updated cores
+- name: Reload any cores that had updates
   uri:
-    url: http://127.0.0.1:8983/solr/admin/cores?action=RELOAD&core=enm-test
+    url: "http://127.0.0.1:8983/solr/admin/cores?action=RELOAD&core={{ item.item.name }}"
     method: POST
     user: admin
     password: "{{ solr_admin_password }}"
     force_basic_auth: yes
+  with_items: "{{ cores_updated.results }}"
+  when: 'item.changed'

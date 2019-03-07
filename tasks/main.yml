@@ -62,7 +62,7 @@
     path: /lib/systemd/system/solr.service
   register: service_exists
 
-# Configur Solr service if it exists
+# Configure Solr service if it exists
 - name: Ensure solr is started and enabled on boot if configured.
   service:
     name: "{{ solr_service_name }}"
@@ -75,9 +75,9 @@
   when: "solr_version.split('.')[0] >= '5'"
 
 # Wait a few seconds for Solr to start
-- name: Wait a few seconds for Solr to start
-  pause:
-    seconds: 10
+#- name: Wait a few seconds for Solr to start
+#  pause:
+#    seconds: 3
 
 # Create cores, if any are configured.
 - include_tasks: cores.yml
