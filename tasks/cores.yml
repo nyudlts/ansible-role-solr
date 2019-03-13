@@ -27,6 +27,7 @@
     recurse: true
   when: "item not in solr_local_cores_names"
   with_items: "{{ solr_playbook_cores }}"
+  ignore_errors: yes
 
 # Pull core conf for new cores
 - name: Clone conf for new cores
@@ -39,13 +40,19 @@
   become: true
   become_user: "{{ solr_user }}"
   register: cores_cloned
+  ignore_errors: yes
 
-# Inform user that they need to restart solr to initialize new cores
-- pause:
-    prompt: "New core {{ item.item.name }} added, remember to restart Solr to initialize this new core."
-    seconds: 30
-  with_items: "{{ cores_cloned.results }}"
-  when: 'item.changed'
+# Initialize core in Solr
+- name: Create new cores
+  uri:
+    url: "http://127.0.0.1:8983/solr/admin/cores?name={{ item }}&action=CREATE&instanceDir=/var/solr/data/{{ item }}&dataDir=data&config=solrconfig$
+    method: POST
+    user: admin
+    password: "{{ solr_admin_password }}"
+    force_basic_auth: yes
+  when: "item not in solr_local_cores_names"
+  with_items: "{{ solr_playbook_cores }}"
+  ignore_errors: yes
 
 # Any cores listed in playbook that already exist, update conf
 - name: Update conf for existing cores
@@ -60,8 +67,8 @@
   with_items: "{{ solr_cores }}"
   become: true
   become_user: "{{ solr_user }}"
-  ignore_errors: yes
   register: cores_updated
+  ignore_errors: yes
 
 # Reload any updated cores
 - name: Reload any cores that had updates
@@ -73,3 +80,4 @@
     force_basic_auth: yes
   with_items: "{{ cores_updated.results }}"
   when: 'item.changed'
+  ignore_errors: yes
