@@ -45,7 +45,7 @@
 # Initialize core in Solr
 - name: Create new cores
   uri:
-    url: "http://127.0.0.1:8983/solr/admin/cores?name={{ item }}&action=CREATE&instanceDir=/var/solr/data/{{ item }}&dataDir=data&config=solrconfig$
+    url: "http://127.0.0.1:8983/solr/admin/cores?name={{ item }}&action=CREATE&instanceDir=/var/solr/data/{{ item }}&dataDir=data&config=solrconfig.xml"
     method: POST
     user: admin
     password: "{{ solr_admin_password }}"
