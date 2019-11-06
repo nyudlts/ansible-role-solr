@@ -38,6 +38,8 @@
     accept_hostkey: yes
   when: "item.name not in solr_local_cores_names"
   with_items: "{{ solr_cores }}"
+  become: true
+  become_user: "{{ solr_user }}"
   register: cores_cloned
   ignore_errors: yes
 
@@ -62,9 +64,10 @@
     clone: no
     update: yes
     accept_hostkey: yes
-#    force: yes
   when: "item.name in solr_local_cores_names"
   with_items: "{{ solr_cores }}"
+  become: true
+  become_user: "{{ solr_user }}"
   register: cores_updated
   ignore_errors: yes
 
